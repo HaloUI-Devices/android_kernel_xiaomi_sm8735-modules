@@ -64,6 +64,9 @@
 #include "sde_cesta.h"
 #include "sde_loopback.h"
 
+#include <linux/cpu_boost.h>
+#include <soc/qcom/dcvs_boost.h>
+
 #if (KERNEL_VERSION(6, 3, 0) <= LINUX_VERSION_CODE)
 #include <linux/firmware/qcom/qcom_scm.h>
 #else
@@ -1436,6 +1439,9 @@ static void sde_kms_prepare_commit(struct msm_kms *kms,
 		SDE_EVT32(rc, SDE_EVTLOG_ERROR);
 		goto end;
 	}
+
+        cpu_boost_kick(6);
+	qcom_dcvs_bus_boost_kick(6);
 
 	if (sde_kms->first_kickoff) {
 		/* find if it's power on commit */
